@@ -1,0 +1,6 @@
+To start mongodb locally  
+Press the Windows + R keys on your keyboard to open the Run window. Type services.msc and hit Enter on your keyboard or click/tap the OK button. A new window opens up.
+Search MongoDB.exe. Right click on it and select Start.
+
+
+testing
