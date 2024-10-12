@@ -11,7 +11,6 @@ interface LoginData {
   password: string;
 }
 
-// Validation function for registering a user
 export const registerValidation = (data: RegisterData) => {
   const schema = Joi.object({
     name: Joi.string().min(6).required(),

@@ -1,4 +1,4 @@
-// models/user.model.ts
+ 
 import mongoose from 'mongoose';
 import type { Document } from 'mongoose';
 import Joi from 'joi';

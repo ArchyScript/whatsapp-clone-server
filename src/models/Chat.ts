@@ -1,5 +1,5 @@
-// models/chat.model.ts
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
+import type { Document } from 'mongoose';
 
 interface IChat extends Document {
   participants: mongoose.Schema.Types.ObjectId[];

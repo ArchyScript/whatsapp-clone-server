@@ -1,5 +1,5 @@
-// models/message.model.ts
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
+import type { Document } from 'mongoose';
 
 interface IMessage extends Document {
   chatId: mongoose.Schema.Types.ObjectId;
