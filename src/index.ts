@@ -1,26 +1,32 @@
 import express from 'express';
 import dotenv from 'dotenv';
-// import { connectDatabase } from './config/mongooseConnect.js';
+import { connectDatabase } from './config/mongooseConnect.js';
+import { errorHandler } from './middleware/errorHandler';
+import { createServer } from 'http';
+import type { Server } from 'http';
 
-import type { Request, Response } from 'express';
+// route import
+import authRoute from './routes/auth';
 
 dotenv.config();
 const app = express();
 
 const port = process.env.PORT || 5000;
 
-// connectDatabase();
+connectDatabase();
 
-// Middleware to parse JSON request bodies
 app.use(express.json());
+app.use(errorHandler);
 
-// Define a basic route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript with Express!');
-});
+const server: Server = createServer(app);
+
+const baseUrl: string = '/api/v1';
+
+// routes
+app.use(`${baseUrl}/auth`, authRoute);
 
 // Start the server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on PORT: ${port}`);
 });
 

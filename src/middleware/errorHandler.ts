@@ -1,14 +1,15 @@
-const { errorConstants } = require('../constants/errorConstants');
-
+import { errorConstants } from '../constants/errorConstants';
+// import type { CreateHttpError, HttpError } from 'http-errors';
 import type { Request, Response, NextFunction } from 'express';
 
-// errorHandler.js
-const errorHandler = (
+export const errorHandler = (
   err: any,
+  // err:  HttpError,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
+  console.log('error', err)
   // Set default status code to 500 (Internal Server Error)
   const statusCode = err.statusCode || errorConstants.INTERNAL_SERVER_ERROR;
 
@@ -16,7 +17,7 @@ const errorHandler = (
   const errorTitle = Object.keys(errorConstants.ERROR_TITLES).includes(
     statusCode.toString(),
   )
-    ? errorConstants.ERROR_TITLES[statusCode]
+    ? (errorConstants.ERROR_TITLES as Record<string, string>)[statusCode]
     : errorConstants.ERROR_TITLES.INTERNAL_SERVER_ERROR;
 
   const stack = process.env.NODE_ENV === 'production' ? null : err.stack;
@@ -31,5 +32,3 @@ const errorHandler = (
     message: err.message || errorConstants.ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
   });
 };
-
-module.exports = errorHandler;
