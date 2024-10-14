@@ -4,6 +4,7 @@ import { connectDatabase } from './config/mongooseConnect.js';
 import { errorHandler } from './middleware/errorHandler';
 import { createServer } from 'http';
 import type { Server } from 'http';
+import cors from 'cors'
 
 // route import
 import authRoute from './routes/auth';
@@ -15,6 +16,7 @@ const port = process.env.PORT || 5000;
 
 connectDatabase();
 
+app.use(cors());
 app.use(express.json());
 app.use(errorHandler);
 
