@@ -4,7 +4,8 @@ import { connectDatabase } from './config/mongooseConnect.js';
 import { errorHandler } from './middleware/errorHandler';
 import { createServer } from 'http';
 import type { Server } from 'http';
-import cors from 'cors'
+import { Server as SocketIoServer } from 'socket.io';
+import cors from 'cors';
 
 // route import
 import authRoute from './routes/auth';
@@ -26,6 +27,38 @@ const baseUrl: string = '/api/v1';
 
 // routes
 app.use(`${baseUrl}/auth`, authRoute);
+
+const io = new SocketIoServer(server);
+
+interface SocketData {
+  senderId: string;
+  recipientId: string;
+  message: string;
+}
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  // Event for sending a message to another user
+  socket.on('privateMessage', async (data: SocketData) => { 
+    const { senderId, recipientId, message } = data;
+    console.log('data', data);
+    // Save message to database
+    // const newMessage = await Message.create({
+    //   sender: senderId,
+    //   recipient: recipientId,
+    //   message,
+    //   createdAt: new Date(),
+    // });
+
+    // Emit the message to the recipient
+    io.to(recipientId).emit('receiveMessage', 'new Message sent');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
 
 // Start the server
 server.listen(port, () => {

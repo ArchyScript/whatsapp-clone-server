@@ -1,4 +1,4 @@
-const { Server: SocketIoServer } = require('socket.io');
+import { Server as SocketIoServer } from 'socket.io';
 
 const setupSocket = (server: any) => {
   const io = new SocketIoServer(server, {
