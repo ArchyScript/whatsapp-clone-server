@@ -1,17 +1,11 @@
 import type { CookieOptions } from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
- 
-const maxAge = 3 * 24 * 60 * 60 * 1000;
-const JWT_SECRET = process.env.JWT_SECRET as string;
+import { JWT_SECRET } from '../constants/envExport';
 
-export const createToken = (
-  email: string, 
-  userId: mongoose.Types.ObjectId,
-) => {
-  return jwt.sign({ email, userId }, JWT_SECRET, {
-    expiresIn: maxAge,
-  });
+const maxAge = 3 * 24 * 60 * 60 * 1000;
+export const createToken = (email: string, userId: mongoose.Types.ObjectId) => {
+  return jwt.sign({ email, userId }, JWT_SECRET, { expiresIn: maxAge });
 };
 
 export const cookieOptions: CookieOptions = {

@@ -18,6 +18,8 @@ export const errorConstants = {
     NOT_FOUND: 'Not Found',
     INTERNAL_SERVER_ERROR: 'Internal Server Error',
     SERVICE_UNAVAILABLE: 'Service Unavailable',
+    DUPLICATE_KEY_ERROR: 'Duplicate Key Error',
+    
   },
 
   // Custom error messages
@@ -30,5 +32,6 @@ export const errorConstants = {
     INTERNAL_SERVER_ERROR: 'An unexpected error occurred on the server.',
     SERVICE_UNAVAILABLE:
       'The server is currently unavailable. Please try again later.',
+          DUPLICATE_KEY_ERROR: 'A duplicate value exists in the database.',
   },
 };

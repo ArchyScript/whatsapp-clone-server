@@ -11,7 +11,6 @@ const UserSchema = new mongoose.Schema<UserModel>(
     username: {
       type: String,
       required: isSocialLogin,
-      unique: true,
     },
     email: {
       type: String,
@@ -25,7 +24,6 @@ const UserSchema = new mongoose.Schema<UserModel>(
     phoneNumber: {
       type: String,
       required: isSocialLogin,
-      unique: true,
     },
     avatarUrl: {
       type: String,

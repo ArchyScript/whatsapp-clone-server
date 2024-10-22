@@ -1,9 +1,10 @@
 import { Server as SocketIoServer } from 'socket.io';
+import { ORIGIN } from '../constants/envExport';
 
 const setupSocket = (server: any) => {
   const io = new SocketIoServer(server, {
     cors: {
-      origin: process.env.ORIGIN,
+      origin: ORIGIN,
       methods: ['GET', 'POST'],
       credentials: true,
     },

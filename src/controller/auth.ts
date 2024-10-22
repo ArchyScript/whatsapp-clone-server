@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
-import crypto from 'crypto';
+// import crypto from 'crypto';
 import type { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler';
 import { User } from '../models/User';
+import { createError } from '../common/customError';
 import {
   loginValidation,
   signupValidation,
@@ -22,28 +22,32 @@ import {
  * @access Public
  */
 export const signup = asyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { value, error } = signupValidation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return next(createError(400, error.details[0].message));
 
     const { email, password, username, phoneNumber } = value;
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
-    if (userExists) return res.status(500).send('User already exist');
+    if (userExists) return next(createError(500, 'User already exist'));
 
     const hashedPassword = await hashPassword(password);
 
     // Create a new user in the database
-    const user = await User.create({
-      email,
-      username,
-      password: hashedPassword,
-      phoneNumber,
-    });
+    try {
+      const user = await User.create({
+        email,
+        username,
+        password: hashedPassword,
+        phoneNumber,
+      });
 
-    res.cookie('jwt', createToken(email, user._id), cookieOptions);
-    return res.status(201).json({ success: true, user });
+      res.cookie('jwt', createToken(email, user._id), cookieOptions);
+      return res.status(201).json({ success: true, user });
+    } catch (error) {
+      next(error);
+    }
   },
 );
 // #endregion
@@ -55,20 +59,20 @@ export const signup = asyncHandler(
  * @access Public
  */
 export const login = asyncHandler(
-  async (req: Request, res: Response): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { value, error } = loginValidation(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return next(createError(400, error.details[0].message));
 
     const { email, password } = value;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(500).send("User doesn't have an account");
+    if (!user) return next(createError(500, "User doesn't have an account"));
 
     // option to login with social of trad way
     if (!user.password) return;
 
     const isPasswordValid = await comparePassword(password, user.password);
-    if (!isPasswordValid) return res.status(401).send('Invalid password.');
+    if (!isPasswordValid) return next(createError(401, 'Invalid password.'));
 
     res.cookie('jwt', createToken(email, user._id), cookieOptions);
 

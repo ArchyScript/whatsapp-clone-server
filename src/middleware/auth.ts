@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../constants/envExport';
 
 // Extend Request type to include userId
 interface AuthenticatedRequest extends Request {
@@ -13,7 +14,6 @@ interface TokenPayload extends JwtPayload {
   userId: string;
   email: string;
 }
-const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const verifyToken = async (
   req: AuthenticatedRequest,
@@ -23,18 +23,17 @@ export const verifyToken = async (
   const token = req.header('Authorization')?.replace('Bearer ', '');
   if (!token) return res.status(401).send('Access Denied. No Token Provided.');
 
-  console.log('token:::', token);
-
   jwt.verify(token, JWT_SECRET, (err, payload) => {
     if (err) return res.status(403).send('Invalid Token');
 
-    // Typecast the payload to TokenPayload
-    const { userId, email } = payload as TokenPayload;
-
-    // Attach the userId and email to the request object
-    req.userId = userId;
-    req.email = email;
-    next();
+    try {
+      const { userId, email } = payload as TokenPayload;
+      req.userId = userId;
+      req.email = email;
+      next();
+    } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+    }
   });
 
   //   const token = req.cookies.jwt;
