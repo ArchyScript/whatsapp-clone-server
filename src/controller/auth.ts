@@ -63,6 +63,9 @@ export const login = asyncHandler(
     const { value, error } = loginValidation(req.body);
     if (error) return next(createError(400, error.details[0].message));
 
+  console.log("login", new Date().toLocaleString())
+  console.log("login milli", new Date().getMilliseconds())
+
     const { email, password } = value;
 
     const user = await User.findOne({ email });
@@ -75,7 +78,7 @@ export const login = asyncHandler(
     if (!isPasswordValid) return next(createError(401, 'Invalid password.'));
 
     res.cookie('jwt', createToken(email, user._id), cookieOptions);
-
+ 
     // Respond with the created user (without the password)
     return res.status(201).json({ success: true, user });
   },

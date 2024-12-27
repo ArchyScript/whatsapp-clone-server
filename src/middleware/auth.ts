@@ -15,7 +15,7 @@ interface TokenPayload extends JwtPayload {
   email: string;
 }
 
-export const verifyToken = async (
+export const validateToken = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,

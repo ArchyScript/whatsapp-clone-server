@@ -1,25 +1,36 @@
-import type { Server, Socket } from 'socket.io';
-import { Server as SocketIoServer } from 'socket.io';
+
+
+import { Server as HttpServer } from "http"; 
+import { Server as SocketIoServer,Socket } from 'socket.io';
 import { ORIGIN } from '../constants/envExport';
 // import { updateUserStatus } from '../utils/userUtils';
 
-export const socketConnection  = (io: Server) => {
-  console.log('io:', io) 
-  io.on('connection', (socket: Socket) => {
+export const socketConnection  = (httpServer: HttpServer) => {  
+  const io = new SocketIoServer(httpServer, {
+    cors: {
+      origin: ORIGIN  , 
+      methods: ["GET", "POST"],
+    },
+  });
+
+  io.on('connection', (socket: Socket) => { 
     const userId = socket.handshake.query.userId;
-    console.log('userId::', userId);
-    console.log('socket::', socket);
-    console.log('socket::', socket);
+    console.log('userId::', userId);  
+    console.log('server',new Date().toLocaleString());
+  console.log("server milli", new Date().getMilliseconds())
 
     // Listen for 'login' event and mark user as active
     socket.on('login', async (userId: string) => {
+    console.log('server login',new Date().toLocaleString());
+  console.log("server login milli", new Date().getMilliseconds())
+
       try {
         // Update user status to active in the database
         // await updateUserStatus(userId, true);
         console.log(`User ${userId} is now active`);
         
         // Emit active status to other clients if needed
-        io.emit('userStatusUpdated', { userId, isActive: true });
+        // io.emit('userStatusUpdated', { userId, isActive: true });
       } catch (err) {
         console.error('Error updating user status:', err);
       }
@@ -31,16 +42,25 @@ export const socketConnection  = (io: Server) => {
         // You could also use socket.userId if you've stored it on connection
         const userId = socket.handshake.query.userId as string;
         // await updateUserStatus(userId, false);
-        console.log(`User ${userId} disconnected and is now inactive`);
+        console.log(`User ${userId} disconnected `);
 
         // Emit updated status to other clients
-        io.emit('userStatusUpdated', { userId, isActive: false });
+        
+        // io.emit('userStatusUpdated', { userId, isActive: false });
+        socket.on('logout', (userId) => {
+  // activeUsers.delete(userId);
+  console.log(`${userId} logged out`);
+  
+  // Notify others
+  // io.emit('userStatusUpdated', { userId, isActive: false });
+});
       } catch (err) {
         console.error('Error setting user inactive:', err);
       }
-    });
- 
     }); 
+    }); 
+
+    return io
   } 
   // const io = new SocketIoServer(server, {
   //   cors: {
