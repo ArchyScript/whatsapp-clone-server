@@ -3,6 +3,7 @@ import type { JwtPayload } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../constants/envExport';
 
+
 // Extend Request type to include userId
 interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -10,31 +11,71 @@ interface AuthenticatedRequest extends Request {
 }
 
 // Define type for the JWT payload
-interface TokenPayload extends JwtPayload {
+export interface TokenPayload extends JwtPayload {
   userId: string;
   email: string;
 }
 
-export const validateToken = async (
+export const isTokenValid = (
+  token: string,
+): { valid: boolean; payload?: TokenPayload } => {
+  try {
+    // Verify the token
+    const payload = jwt.verify(token, JWT_SECRET) as TokenPayload;
+
+    // console.log();
+
+    // If the token is valid, return true with the decoded payload
+    return { valid: true, payload };
+  } catch (err) {
+    console.error('Token validation error:', err);
+    // If the token is invalid, return false
+    return { valid: false };
+  }
+};
+
+// use isTokenValid to verify token
+export const verifyToken = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ): Promise<any> => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+  console.log('req.header from verify token', req.header);
+
+  // Extract token from Authorization header
+  const authHeader = req.header('Authorization');
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ message: 'Access Denied. No Token Provided.' });
+  }
+
+  const token = authHeader.replace('Bearer ', '');
   if (!token) return res.status(401).send('Access Denied. No Token Provided.');
 
-  jwt.verify(token, JWT_SECRET, (err, payload) => {
-    if (err) return res.status(403).send('Invalid Token');
+  const response = isTokenValid(token);
+  const { valid, payload } = response;
 
-    try {
-      const { userId, email } = payload as TokenPayload;
-      req.userId = userId;
-      req.email = email;
-      next();
-    } catch (err) {
-      res.status(401).json({ message: 'Invalid token' });
-    }
-  });
+  if (valid && payload) {
+    const { userId, email } = payload as TokenPayload;
+    req.userId = userId;
+    req.email = email;
+    next();
+  } else {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+  // jwt.verify(token, JWT_SECRET, (err, payload) => {
+  //   if (err) return res.status(403).send('Invalid Token');
+
+  //   try {
+  //     const { userId, email } = payload as TokenPayload;
+  //     req.userId = userId;
+  //     req.email = email;
+  //     next();
+  //   } catch (err) {
+  //     res.status(401).json({ message: 'Invalid token' });
+  //   }
+  // });
 
   //   const token = req.cookies.jwt;
   //   if (!token) return res.status(401).send('Not Authenticated');
