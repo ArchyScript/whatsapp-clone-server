@@ -7,13 +7,14 @@ import { errorHandler } from './middleware';
 import { PORT } from './constants';
 import { Server as SocketIoServer } from 'socket.io';
 import cors from 'cors';
-import {socketConnection}  from './socket';
-import { validateToken } from './middleware/auth';
+import { socketConnection } from './socket';
+import { verifyToken } from './middleware/auth';
+import jwt from 'jsonwebtoken';
 
-// 
+//
 const baseUrl: string = '/api/v1';
 
-dotenv.config();   
+dotenv.config();
 
 // route import
 import authRoute from './routes/auth';
@@ -25,7 +26,7 @@ connectDatabase();
 app.use(cors());
 app.use(express.json());
 
-const server: Server = createServer(app); 
+const server: Server = createServer(app);
 
 // const io = new SocketIoServer(server);
 
@@ -35,23 +36,29 @@ app.use(`${baseUrl}/auth`, authRoute);
 // Custom Error Handling Middleware (catch all errors)
 app.use(errorHandler);
 
-  
-
-// const io =  socketConnection(server);
+// const io =
+socketConnection(server);
 // io.use((socket, next) => {
-//   const token = socket.handshake.headers.authorization?.split(' ')[1]; // Extract token
-//   if (validateToken(token)) {
-//     // Token is valid; attach user info to the socket
-//     const userId = decodeToken(token).userId;
-//     socket.userId = userId; // Save userId for later use
-//     next();
-//   } else {
-//     next(new Error('Authentication error'));
-//   }
-// });
-// // console.log('io', io);
+//   // try {
+//   const token = socket.handshake.headers.authorization?.split(' ')[1];
+//   console.log('token for index', socket.handshake.headers);
 
+//   // console.log('token for indexv 423', socket.handshake);
+
+//   //   if (verifyToken(token)) {
+//   //     // Token is valid; attach user info to the socket
+//   //     const userId = decodeToken(token).userId;
+//   //     socket.userId = userId; // Save userId for later use
+//   //     next();
+//   //   } else {
+//   //     next(new Error('Authentication error'));
+//   //   }
+//   // } catch (err) {
+//   //   console.error('Authentication error:', err);
+//   //   next(new Error('Authentication error: Invalid token'));
+// });
+// console.log('io', io);
 
 server.listen(PORT, () => {
-  console.log(`Server running on PORT: ${PORT}`); 
+  console.log(`Server running on PORT: ${PORT}`);
 });

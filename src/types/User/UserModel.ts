@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import type { Document } from 'mongoose';
 
-export interface UserModel extends Document {
+export interface UserModelType extends Document {
   _id: mongoose.Types.ObjectId;
   username?: string;
   email: string;
@@ -17,4 +17,13 @@ export interface UserModel extends Document {
   provider?: 'google' | 'facebook';
   providerId?: string;
   accessToken?: string;
+}
+
+
+export interface ActiveUserModelType extends Document {
+  userId: mongoose.Types.ObjectId;
+  username?: string;
+  email: string;
+  password?: string;
+  phoneNumber?: string;
 }

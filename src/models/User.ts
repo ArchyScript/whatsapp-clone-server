@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-import type { UserModel } from '../types/User';
+import type { UserModelType, ActiveUserModelType } from '../types/User';
 
 // Returns true if the user is not using social login
 const isSocialLogin = function (this: any): boolean {
   return !this.provider;
 };
 
-const UserSchema = new mongoose.Schema<UserModel>(
+const UserSchema = new mongoose.Schema<UserModelType>(
   {
     username: {
       type: String,
@@ -68,4 +68,22 @@ const UserSchema = new mongoose.Schema<UserModel>(
   },
 );
 
-export const User = mongoose.model<UserModel>('User', UserSchema);
+const ActiveUserSchema = new mongoose.Schema<ActiveUserModelType>(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      unique: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+export const ActiveUser = mongoose.model<ActiveUserModelType>(
+  'ActiveUser',
+  ActiveUserSchema,
+);
+export const User = mongoose.model<UserModelType>('User', UserSchema);
