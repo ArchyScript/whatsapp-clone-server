@@ -1,16 +1,44 @@
 {
-    "compilerOptions": {
-        "target": "ES2020",
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
-        "strict": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowJs": true,
-        "resolveJsonModule": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": [
+    "src/app.ts",
+    "src/server.ts",
+    "src/config/env.ts",
+    "src/config/logger.ts",
+    "src/config/upload.ts",
+    "src/config/index.ts",
+    "src/prisma/**/*.ts",
+    "src/redis/**/*.ts",
+    "src/utils/**/*.ts",
+    "src/validators/**/*.ts",
+    "src/middleware/auth.ts",
+    "src/middleware/error-handler.ts",
+    "src/middleware/request-context.ts",
+    "src/middleware/rate-limit.ts",
+    "src/middleware/index.ts",
+    "src/modules/**/*.ts",
+    "src/types/express.ts",
+    "src/types/common.ts",
+    "src/types/socket.ts",
+    "prisma/**/*.ts"
+  ],
+  "exclude": ["dist", "node_modules", "src/utils/auth.ts", "src/utils/token.ts"]
 }

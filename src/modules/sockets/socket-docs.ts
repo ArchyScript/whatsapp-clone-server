@@ -1,0 +1,42 @@
+export const socketDocs = {
+  clientEmits: [
+    "presence:online",
+    "presence:offline",
+    "conversation:join",
+    "conversation:leave",
+    "message:send",
+    "message:delivered",
+    "message:read",
+    "message:typing:start",
+    "message:typing:stop",
+    "reaction:add",
+    "reaction:remove",
+    "call:start",
+    "call:offer",
+    "call:answer",
+    "call:ice-candidate",
+    "call:accept",
+    "call:reject",
+    "call:end"
+  ],
+  serverEmits: [
+    "presence:update",
+    "conversation:updated",
+    "message:new",
+    "message:updated",
+    "message:deleted",
+    "message:delivered",
+    "message:read",
+    "message:typing",
+    "reaction:updated",
+    "call:incoming",
+    "call:ringing",
+    "call:offer",
+    "call:answer",
+    "call:ice-candidate",
+    "call:accepted",
+    "call:rejected",
+    "call:ended",
+    "call:missed"
+  ]
+}
